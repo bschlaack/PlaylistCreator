@@ -51,13 +51,14 @@ public class PlaylistCreator {
 
     private void writeToM3u(PlaylistDir playlistDir) {
         if (playlistDir.getListMp3Values() != null && !playlistDir.getListMp3Values().isEmpty()) {
-            File parentDir = playlistDir.getDirectory().getParentFile();
+            File dir = new File(playlistDir.getPath());
+            File parentDir = dir.getParentFile();
             StringBuilder sBuild = new StringBuilder();
             sBuild.append("#EXTM3U\r\n");
             for (Mp3Values mp3 : playlistDir.getListMp3Values()) {
                 sBuild.append(mp3.getM3uStringBuilder());
             }
-            String playlistname = getM3uNameFromDir(playlistDir.getDirectory());
+            String playlistname = getM3uNameFromDir(dir);
             File playlist = new File(playlistname);
             try {
                 OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(playlist), StandardCharsets.UTF_8);
@@ -124,16 +125,16 @@ public class PlaylistCreator {
             playlistDir.setListMp3Values(new ArrayList<>());
         }
         Mp3Values mp3 = new Mp3Values();
-        mp3.setFile(file);
+        //mp3.setFile(file);
         Mp3File mp3File = null;
         try {
-            mp3File = new Mp3File(file);
+            mp3File = new Mp3File(file, 65536, false);
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("File \"+file.getAbsolutePath()+\" not supported, skipped!");
             return;
         }
-        mp3.setMp3File(mp3File);
+        //mp3.setMp3File(mp3File);
         mp3.setPath(file.getAbsolutePath());
         mp3.setLength(mp3File.getLengthInSeconds());
         String title = null;
@@ -160,9 +161,11 @@ public class PlaylistCreator {
     }
 
     private void parseDirectory(PlaylistDir playlistDir) {
-        if (playlistDir != null && playlistDir.getDirectory() != null) {
-            if (playlistDir.getDirectory().listFiles() != null && playlistDir.getDirectory().listFiles().length > 0) {
-                File[] files = playlistDir.getDirectory().listFiles();
+        if (playlistDir != null && playlistDir.getPath()!= null && playlistDir.getPath().length() > 0) {
+            System.out.println("Parsing directory: "+playlistDir.getPath());
+            File directory = new File(playlistDir.getPath());
+            if (directory.listFiles() != null && directory.listFiles().length > 0) {
+                File[] files = directory.listFiles();
                 Arrays.sort(files);
                 for (File file : files) {
                     if (file.isDirectory()) {
@@ -171,7 +174,7 @@ public class PlaylistCreator {
                         }
                         PlaylistDir subDir = new PlaylistDir();
                         subDir.setPath(file.getAbsolutePath());
-                        subDir.setDirectory(file);
+                        //subDir.setDirectory(file);
                         playlistDir.getListSubDir().add(subDir);
                         parseDirectory(subDir);
                     } else if (file.getAbsolutePath().toLowerCase().endsWith(".mp3")) {
@@ -192,13 +195,13 @@ public class PlaylistCreator {
             System.out.println("Working on dir: " + path);
             if (filePath.isDirectory()) {
                 rootPath.setPath(playlistCreator.getRealPath(path));
-                rootPath.setDirectory(filePath);
+                //rootPath.setDirectory(filePath);
                 playlistCreator.parseDirectory(rootPath);
                 playlistCreator.writeToM3u(rootPath);
             } else {
                 if (path.toLowerCase().endsWith(".mp3")) {
                     rootPath.setPath(playlistCreator.getRealPath(path));
-                    rootPath.setDirectory(filePath.getParentFile());
+                    //rootPath.setDirectory(filePath.getParentFile());
                     playlistCreator.addMp3ToPlaylist(rootPath, filePath);
                 } else {
                     System.out.println("Path was file, but no mp3, stopping!");

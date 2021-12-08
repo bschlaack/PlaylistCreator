@@ -10,8 +10,8 @@ import java.io.File;
  */
 public class Mp3Values {
 
-    private File file;
-    private Mp3File mp3File;
+    //private File file;
+    //private Mp3File mp3File;
     private String title;
     private String path;
     private long length;
@@ -50,7 +50,7 @@ public class Mp3Values {
         this.length = length;
     }
 
-    public File getFile() {
+    /*public File getFile() {
         return file;
     }
 
@@ -64,6 +64,6 @@ public class Mp3Values {
 
     public void setMp3File(Mp3File mp3File) {
         this.mp3File = mp3File;
-    }
+    }*/
 
 }

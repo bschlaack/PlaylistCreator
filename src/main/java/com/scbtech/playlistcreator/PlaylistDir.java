@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class PlaylistDir {
     private String path;
-    private File directory;
+    //private File directory;
     private List<PlaylistDir> listSubDir;
     private List<Mp3Values> listMp3Values;
 
@@ -38,13 +38,13 @@ public class PlaylistDir {
         this.listMp3Values = listMp3Values;
     }
 
-    public File getDirectory() {
+    /*public File getDirectory() {
         return directory;
     }
 
     public void setDirectory(File directory) {
         this.directory = directory;
-    }
+    }*/
     
     
 }
